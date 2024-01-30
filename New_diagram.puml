@@ -1,0 +1,238 @@
+@startuml
+'https://plantuml.com/class-diagram
+Move <|-- Linear
+Move <|-- Parabolic
+
+class Move {
+  virtual sf::Vector2f move(const sf::Vector2f& coords, float speed)
+}
+
+class Linear {
++move() override
+-float k
++Linear()
++Linear(float k)
++sf::Vector2f move(const sf::Vector2f coords, float speed) override
+}
+
+class Parabolic {
++move() override
+-float a
+-float b
+-float c
++Parabolic()
++Parabolic(float a, float b, float c)
++sf::Vector2f move(const sf::Vector2f& coords, floaut speed) override
+}
+
+class BulletPrototype {
++bool checkInterfere(sf::Sprite other)
++virtual BulletPrototype* clone()
++virtual bool hitEnemy(Enemy& entity) = 0
++virtual bool hitPlayer(Player& entity) = 0
++virtual ~BulletPrototype()
++void update()
++void draw(sf::RenderWindow& window)
+
+
++BulletPrototype& setDirection(const sf::Vector2f& direction);
++BulletPrototype& setSpeed(float new_speed);
++BulletPrototype& setPosition(const sf::Vector2f& position);
++BulletPrototype& setMovement(Move* new_movement);
++BulletPrototype& setDamage(int damage);
++BulletType type;
+
+#sf::Texture tex;
+#int damage;
+#float speed;
+#Move* movement_type;
+#sf::Sprite sprite;
+}
+
+class SimpleBullet {
++SimpleBullet()
++SimpleBullet(const SimpleBullet& other)
++BulletPrototype* clone() const override
+}
+
+class TriangleBullet {
++TriangleBullet()
++TriangleBullet(const TriangleBullet& other)
++BulletPrototype* clone() const override
+}
+
+class BigCircleBullet {
++BigCircleBullet()
++BigCircleBullet(const BigCircleBullet& other)
++BulletPrototype* clone() const override
+}
+
+class PercentDamageBullet {
++PercentDamageBullet()
++PercentDamageBullet(const PercentDamageBullet& other)
++BulletPrototype* clone() const override
+}
+
+BulletPrototype <|-- TriangleBullet
+BulletPrototype <|-- SimpleBullet
+BulletPrototype <|-- BigCircleBullet
+BulletPrototype <|-- PercentDamageBullet
+BulletPrototype ..> Move
+BulletFactory ..> BulletPrototype
+BulletFactory ..> BulletType
+BulletPrototype ..> BulletType
+
+
+class BulletFactory {
++BulletFactory();
++~BulletFactory();
++BulletPrototype* create(BulletType type);
++BulletPrototype* create(BulletType type, const sf::Vector2f& position);
++BulletPrototype* create(BulletType type, const sf::Vector2f& position, Move* movement);
+-std::unordered_map<BulletType, BulletPrototype*> prototypes_;
+}
+
+enum BulletType {
+BigCircleBullet
+TriangleBullet
+PercentDamageBullet
+SimpleBullet
+}
+
+enum EnemyType {
+DefaultEnemyType
+ToughEnemyType
+InvincibleEnemyType
+BossType
+}
+
+class Enemy {
+#int bullet_type
+#int health
+#double speed
+#float armor
+#sf::Texture texture
+#sf::Sprite sprite
+#Move* movement
++Enemy()
++int getHP()
++void move()
++void setMove(Move* other_movement)
++void setPosition(sf::Vector2f position)
++virtual Enemy* clone()
++virtual BulletPrototype* shoot(BulletType type, sf::Vector2f velocity)
++void update()
++sf::Sprite getSprite()
++sf::Vector2f getPosition()
++void takeDamage(BulletPrototype bullet)
+}
+
+class DefaultEnemy {
++Enemy* clone() override
++DefaultEnemy(const DefaultEnemy& other)
++DefaultEnemy()
+}
+
+class ToughEnemy {
++Enemy* clone() override
++ToughEnemy(const ToughEnemy& other)
++ToughEnemy()
+}
+
+class InvincibleEnemy {
++Enemy* clone() override
++InvincibleEnemy(const InvincibleEnemy& other)
++InvincibleEnemy()
+}
+
+class Boss {
++Enemy* clone() override
++Boss(const Boss& other)
++Boss()
+}
+
+class EnemyFactory {
++EnemyFactor()
++Enemy* create(EnemyType type, sf::Vector2f position, Move* movement)
+-std::unordered_map<EnemyType, Enemy*> enemies
+-~EnemyFactory()
+}
+
+Enemy <|-- DefaultEnemy
+Enemy <|-- ToughEnemy
+Enemy <|-- InvincibleEnemy
+Enemy <|-- Boss
+Enemy ..> Move
+EnemyFactory ..> Enemy
+EnemyFactory ..> EnemyType
+Enemy ..> EnemyType
+
+class MainMenu {
++MainMenu(double width, double height, sf::RenderWindow& mainWindow);
+
++void draw();
++void moveUp();
++void moveDown();
++int mainPressed();
++void mouseContains(sf::RenderWindow& mainWindow, MainMenu& main_menu);
++void mousePressedMenu(sf::RenderWindow& mainWindow, MainMenu& main_menu);
++sf::Sprite getMainSprite();
+
++~MainMenu();
+-int MainMenuSelected = -1;
+-sf::RenderWindow& main_window;
+-sf::Texture unchoosen_textures[Menu_size];
+-sf::Texture choosen_textures[Menu_size];
+-sf::Sprite mainMenu[Menu_size];
+-sf::Texture main_menu_texture;
+-sf::Sprite main_menu_sprite;
+}
+
+class ShopWindow {
++ShopWindow(double width, double height, sf::RenderWindow& main_window);
+
++void draw();
++void moveLeft();
++void moveRight();
++int shipPressed();
++sf::Sprite getShopSprite();
++~ShopWindow();
+-int ship_selected = 0;
+-sf::RenderWindow& main_window;
+-sf::Texture textures[amount_of_ships];
+-sf::Sprite ships[amount_of_ships];
+-sf::Texture shop_texture;
+-sf::Sprite shop_sprite;
+}
+
+class ChoosenWindow {
++ChooseWindow(double width, double height, sf::RenderWindow& main_window);
+
++void draw();
++void moveLeft();
++void moveRight();
++int levelPressed();
++sf::Sprite getChooseSprite();
++~ChooseWindow();
+-int level_selected = 0;
+-sf::RenderWindow& main_window;
+-sf::Texture textures[amount_of_levels];
+-sf::Sprite levels[amount_of_levels];
+-sf::Texture choose_level_texture;
+-sf::Sprite choose_level_sprite;
+}
+
+MainMenu ..> ChoosenWindow
+MainMenu ..> ShopWindow
+
+enum ShipType {
+DefaultShip
+to bo continued...
+}
+
+class Hero {
+-ShipType typeOfShip
+}
+
+@enduml
+

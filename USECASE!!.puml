@@ -1,0 +1,19 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+:Player: as player
+(Menu) as menu
+(Levels) as lvls
+player -> menu
+menu->lvls : chooses
+:Enemies: as enemies
+(Ship) as ship
+menu -up-> ship : chooses
+note "Shoots each other" as shootnote
+shootnote .. ship
+shootnote .. enemies
+(Shop) as shop
+player -down-> shop : buys ships
+lvls .> enemies : includes
+
+@enduml
